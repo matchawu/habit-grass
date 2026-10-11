@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>習慣草地</title>
+<meta name="description" content="有做就打勾，草越綠點數越多，點數換你自己設計的獎勵券。">
+<meta name="theme-color" content="#EDF0EB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0F1411" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="習慣草地">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>習慣草地</h1>
+      <p>每個習慣有自己的草地，賺來的點數放進同一個錢包，換你自己設計的獎勵券。</p>
+    </div>
+  </header>
+
+  <div class="hint" id="installHint" hidden>
+    <p>在 Safari 按「分享」→「加入主畫面」，用起來就像 app，資料也比較不會被清掉。</p>
+    <button class="mini" id="installHintClose">知道了</button>
+  </div>
+
+  <div class="top">
+    <div class="today" id="today"></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <section>
+    <div class="sec-head">
+      <h2>總覽草地</h2>
+      <div class="yearnav">
+        <button id="prevY" aria-label="上一年">‹</button>
+        <span class="num" id="yearLabel"></span>
+        <button id="nextY" aria-label="下一年">›</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="grass-scroll" data-sk="all" id="overview"></div>
+      <div class="grass-foot">
+        <span>顏色深淺代表當天所有習慣加起來賺了多少點。忘記打卡的話，最近 3 天的格子點一下就能補登或修改。</span>
+        <span class="legend">少 <i class="c"></i><i class="c" data-l="1"></i><i class="c" data-l="2"></i><i class="c" data-l="3"></i><i class="c" data-l="4"></i> 多</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>我的習慣</h2>
+      <span class="eyebrow" id="habitCount"></span>
+    </div>
+    <div class="habits" id="habits"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>我的獎勵券</h2>
+      <span class="eyebrow">所有習慣的點數都能用</span>
+    </div>
+    <div class="coupons" id="coupons"></div>
+    <div class="templates" id="templates"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>兌換紀錄</h2></div>
+    <div class="history" id="history"></div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>備份</h2></div>
+    <div class="card backup">
+      <p>資料只存在這支手機的瀏覽器裡。建議每週匯出一次，存到 iCloud 雲碟或 Google 雲端硬碟；換手機時再匯入就能接著用。</p>
+      <p id="lastBackup"></p>
+      <div class="row">
+        <button class="btn" id="exportBtn">匯出備份</button>
+        <label class="btn ghost" for="importFile">匯入備份</label>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <div class="import-confirm" id="importConfirm" hidden></div>
+    </div>
+  </section>
+</div>
+
+<dialog id="dayDlg">
+  <div class="dlg-grid">
+    <div><div class="eyebrow">補登 / 修改</div><h3 id="dayTitle"></h3></div>
+    <div class="hlist" id="dayRows"></div>
+    <div class="dlg-actions"><button class="btn ghost" id="dayClose">完成</button></div>
+  </div>
+</dialog>
+
+<dialog id="hDlg">
+  <form id="hForm" class="dlg-grid">
+    <h3 id="hTitle">新增習慣</h3>
+    <label class="field"><span>習慣名稱</span><input class="inp" type="text" id="hName" maxlength="20" placeholder="例如：跑步" required></label>
+    <div class="field"><span>顏色</span><div class="picks" id="hColor"></div></div>
+    <div class="field"><span>怎麼記錄</span>
+      <div class="picks">
+        <label><input type="radio" name="htype" value="level" id="hTypeLevel"><span class="seg">分等級（像重訓強度）</span></label>
+        <label><input type="radio" name="htype" value="check" id="hTypeCheck"><span class="seg">有做就打勾</span></label>
+      </div>
+    </div>
+    <div class="field" id="hLevelsField"><span>等級和點數（2～4 級，由少到多）</span><div class="lvrows" id="hLevels"></div></div>
+    <label class="field" id="hPtsField"><span>每次完成得幾點</span><input class="inp" type="number" id="hPts" min="1" max="99" value="2"></label>
+    <div class="lvhint">之後改點數不會影響已經賺到的點數。</div>
+    <div class="dlg-actions">
+      <button type="button" class="btn ghost" id="hCancel">取消</button>
+      <button type="submit" class="btn" id="hSave">儲存</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="cDlg">
+  <form id="cForm" class="dlg-grid">
+    <h3>設計一張獎勵券</h3>
+    <div class="preview-wrap" id="cPreview"></div>
+    <label class="field"><span>獎勵名稱</span><input class="inp" type="text" id="cName" maxlength="30" placeholder="例如：麥當勞大麥克套餐" required></label>
+    <label class="field"><span>需要幾點</span><input class="inp" type="number" id="cCost" min="1" max="9999" value="20" required></label>
+    <div class="field"><span>張數</span>
+      <div class="qtyrow">
+        <input class="inp" type="number" id="cQty" min="1" max="99" value="1" aria-label="張數">
+        <label class="check"><input type="checkbox" id="cUnlimited"> 不限張數，可以一直兌換</label>
+      </div>
+    </div>
+    <label class="field"><span>附註（選填）</span><input class="inp" type="text" id="cNote" maxlength="40" placeholder="例如：限週末、要加點一份雞塊"></label>
+    <div class="field"><span>圖示</span><div class="picks" id="cEmoji"></div></div>
+    <div class="field"><span>顏色</span><div class="picks" id="cColor"></div></div>
+    <div class="dlg-actions">
+      <button type="button" class="btn ghost" id="cCancel">取消</button>
+      <button type="submit" class="btn">放進錢包</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
