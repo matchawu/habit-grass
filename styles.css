@@ -1,5 +1,6 @@
 /* Page reset (previously supplied by the artifact host) */
 :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); -webkit-text-size-adjust: 100%; }
+html, body { overflow-x: clip; }
 body { margin: 0; -webkit-tap-highlight-color: transparent; }
 [hidden] { display: none !important; }
 img { max-width: 100%; }
@@ -102,7 +103,7 @@ button.c:hover { box-shadow: 0 0 0 1.5px var(--muted); }
 .habit-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
 .habit-head h3 { font-size: 17px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
 .habit-head p { margin: 2px 0 0; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
-.habit-side { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.habit-side { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
 .habit-side .num { font-size: 22px; color: var(--ink); font-weight: 700; }
 .mini { border: 1px solid var(--line); background: transparent; border-radius: 8px; padding: 3px 10px; font-size: 13px; }
 .addhabit { border: 2px dashed var(--line); border-radius: 18px; padding: 16px 18px; display: grid; gap: 10px; }
@@ -166,7 +167,7 @@ dialog h3 { font-size: 20px; font-weight: 900; }
 .dlg-grid { display: grid; gap: 16px; }
 .field { display: grid; gap: 6px; }
 .field > span { font-size: 13px; font-weight: 500; color: var(--muted); }
-.inp { width: 100%; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; min-width: 0; }
+.inp { width: 100%; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; font-size: 16px; min-width: 0; }  /* 16px keeps iOS from zooming in on focus */
 .picks { display: flex; flex-wrap: wrap; gap: 6px; }
 .picks label { cursor: pointer; }
 .picks input { position: absolute; opacity: 0; pointer-events: none; }

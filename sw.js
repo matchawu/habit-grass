@@ -1,6 +1,6 @@
 // App files: network first so updates show up right away, cache as an offline fallback.
 // Google Fonts: cache first, refreshed in the background.
-const SHELL_CACHE = "shell-v1";
+const SHELL_CACHE = "shell-v2";
 const FONT_CACHE = "fonts-v1";
 const SHELL = [
   "./", "index.html", "styles.css", "app.js", "manifest.webmanifest",
